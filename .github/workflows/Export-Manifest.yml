@@ -1,7 +1,6 @@
 name: Export-ManiFest CICD
 on:
-  repository_dispatch:
-    types: [Export]
+  workflow_dispatch:
     inputs:
       manifest_Id:
         type: string
@@ -12,7 +11,7 @@ on:
           - "101814"
 env:
   DEPLOYMENT_NAME: Export-ManiFest CICD
-  manifest_id: ${{ github.event.client_payload.manifest_Id }}
+  manifest_id: ${{ github.event.inputs.manifest_Id }}
   Workato_Token: ${{ secrets.WORKATOTOKEN }}
   GITHUB_TOKEN: ${{ secrets.GITHUBTOKEN }}
   TEAMS_WEBHOOK_URL: ${{ secrets.TEAMS_WEBHOOK_URL }}
@@ -67,19 +66,13 @@ jobs:
       - name: Remove Summary Log File from Git Repository
         run: rm ${{ env.summary_file_name }}
 
-      - name: Add local files to Git local branch
+      - name: Commit and Push Changes
         run: |
           git config --global user.email "rajeshjanapati@gmail.com"
           git config --global user.name "rajeshjanapati"
           git add .
-
-          # Check for delta changes before committing
-          if git diff --quiet; then
-            echo "No changes to commit. Skipping commit."
-          else
-            git commit -m "cicd update"
-            git push origin HEAD:main
-          fi
+          git commit -m "Commit message"
+          git push origin HEAD:main
 
       - name: Send Notification to Teams
         if: ${{ always() }}
