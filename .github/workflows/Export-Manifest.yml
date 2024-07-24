@@ -74,6 +74,9 @@ jobs:
           git commit -m "Commit message"
           git push origin HEAD:main
 
+      - name: Log TEAMS_WEBHOOK_URL
+        run: echo "TEAMS_WEBHOOK_URL=${{ secrets.TEAMS_WEBHOOK_URL }}"
+
       - name: Send Notification to Teams
         if: ${{ always() }}
         shell: pwsh
